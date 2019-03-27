@@ -42,6 +42,7 @@ type Server struct {
 
     totalReq uint64 // total requests since server start
     numReq   uint64 // num requests since last stats output
+    maxPostBodySize int64          //max post body size
 }
 
 func (s *Server) Construct() {
@@ -146,6 +147,7 @@ func (s *Server) Serve() {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    r.Body = http.MaxBytesReader(w, r.Body, s.maxPostBodySize)
     atomic.AddUint64(&s.numReq, 1)
 
     if s.FileEnable {

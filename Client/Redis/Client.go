@@ -141,6 +141,33 @@ func (c *Client) set(key string, value interface{}, expire time.Duration, flag s
     return ok && bytes.Equal(payload, replyOK)
 }
 
+func (c *Client) SMembers(setName string) *pgo.Value {
+    newKey := c.BuildKey(setName)
+    conn := c.GetConnByKey(newKey)
+    defer conn.Close(false)
+    return pgo.NewValue(conn.Do("SMEMBERS", newKey))
+}
+
+func (c *Client) SAdd(setName string, value interface{}) bool {
+    newKey := c.BuildKey(setName)
+    conn := c.GetConnByKey(newKey)
+    defer conn.Close(false)
+    var res interface{}
+    res = conn.Do("SAdd", newKey, value)
+    payload, ok := res.([]byte)
+    return ok && bytes.Equal(payload, replyOK)
+}
+
+func (c *Client) SRem(setName string, value interface{}) bool {
+    newKey := c.BuildKey(setName)
+    conn := c.GetConnByKey(newKey)
+    defer conn.Close(false)
+    var res interface{}
+    res = conn.Do("SRem", newKey, value)
+    payload, ok := res.([]byte)
+    return ok && bytes.Equal(payload, replyOK)
+}
+
 func (c *Client) mset(items map[string]interface{}, expire time.Duration, flag string) bool {
     addrKeys, newKeys := c.AddrNewKeys(items)
     wg, success := new(sync.WaitGroup), uint32(0)

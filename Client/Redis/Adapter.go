@@ -56,6 +56,37 @@ func (a *Adapter) Get(key string) *pgo.Value {
     return res
 }
 
+func (a *Adapter) SMembers(setName string) *pgo.Value {
+    profile := "Redis.SMembers"
+    a.GetContext().ProfileStart(profile)
+    defer a.GetContext().ProfileStop(profile)
+    defer a.handlePanic()
+    res, hit := a.client.SMembers(setName), 0
+    if res != nil {
+        hit = 1
+    }
+    a.GetContext().Counting(profile, hit, 1)
+    return res
+}
+
+func (a *Adapter) SAdd(key string, value interface{}) bool {
+    profile := "Redis.SAdd"
+    a.GetContext().ProfileStart(profile)
+    defer a.GetContext().ProfileStop(profile)
+    defer a.handlePanic()
+
+    return a.client.SAdd(key, value)
+}
+
+func (a *Adapter) SRem(key string, value interface{}) bool {
+    profile := "Redis.SRem"
+    a.GetContext().ProfileStart(profile)
+    defer a.GetContext().ProfileStop(profile)
+    defer a.handlePanic()
+
+    return a.client.SRem(key, value)
+}
+
 func (a *Adapter) MGet(keys []string) map[string]*pgo.Value {
     profile := "Redis.MGet"
     a.GetContext().ProfileStart(profile)

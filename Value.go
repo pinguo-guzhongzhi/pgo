@@ -162,7 +162,6 @@ func (v *Value) String() string {
 //StringArray return string array
 func (v *Value) StringArray() []string {
     d := make([]string, 0)
-    fmt.Println(v.data)
     if v.data == nil {
         return d
     }

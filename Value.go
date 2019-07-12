@@ -159,6 +159,19 @@ func (v *Value) String() string {
     }
 }
 
+//StringArray return string array
+func (v *Value) StringArray() []string {
+    d := make([]string, 0)
+    fmt.Println(v.data)
+    if v.data == nil {
+        return d
+    }
+    for _, v := range v.data.([]interface{}) {
+        d = append(d, string(v.([]byte)))
+    }
+    return d
+}
+
 // Bytes return underlying data as bytes
 func (v *Value) Bytes() []byte {
     switch d := v.data.(type) {
